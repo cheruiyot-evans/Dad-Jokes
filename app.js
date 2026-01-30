@@ -1,14 +1,18 @@
-console.log('Dad Jokes Starter');
-const url = 'https://icanhazdadjoke.com/s';
-const btn = document.querySelector('.btn');
-const result = document.querySelector('.result');
+function getElement(selection) {
+  const element = document.querySelector(selection);
+  if (element) {
+    return element;
+  }
+  throw new Error(`The element "${selection}" you selected does not exist`);
+}
 
-btn.addEventListener('click', () => {
-  fetchDadJoke();
-});
+const url = 'https://icanhazdadjoke.com/';
 
-const fetchDadJoke = async () => {
-  result.textContent = 'Loading...';
+const btn = getElement('.btn');
+const result = getElement('.result');
+const img = getElement('.img');
+
+const getRandomJoke = async (url) => {
   try {
     const response = await fetch(url, {
       headers: {
@@ -16,13 +20,19 @@ const fetchDadJoke = async () => {
         'User-Agent': 'learning app',
       },
     });
-    if (!response.ok) {
-      throw new Error('there was an error');
-    }
+    // const response = await fetch(url);
     const data = await response.json();
-    result.textContent = data.joke;
+    // const { strMeal, strCategory, strInstructions, strMealThumb } =
+    //   data.meals[0];
+    const { id, joke } = data;
+    result.textContent = joke;
+    // result.textContent = strInstructions;
+    // img.src = strMealThumb;
   } catch (error) {
-    result.textContent = 'There was an error';
+    console.log(error);
   }
 };
-fetchDadJoke();
+
+btn.addEventListener('click', () => {
+  getRandomJoke(url);
+});
